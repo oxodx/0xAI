@@ -3,7 +3,7 @@ package dev.oxod.oxai
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 import org.slf4j.LoggerFactory
 
 object OxAI : ClientModInitializer {
@@ -87,8 +87,8 @@ object OxAI : ClientModInitializer {
     return chunks
   }
 
-  private fun sendChatMessage(client: MinecraftClient, message: String) {
-    client.player?.networkHandler?.sendChatMessage(message)
+  private fun sendChatMessage(client: Minecraft, message: String) {
+    client.player?.connection?.sendChat(message)
   }
 
   private fun sanitizeChatMessage(msg: String): String {
