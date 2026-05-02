@@ -1,4 +1,4 @@
-package dev.oxod.oxai
+package nl.oxod.oxai
 
 import com.google.gson.Gson
 import java.net.HttpURLConnection

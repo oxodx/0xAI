@@ -1,4 +1,4 @@
-package dev.oxod.oxai
+package nl.oxod.oxai
 
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents

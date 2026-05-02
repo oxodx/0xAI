@@ -14,7 +14,7 @@
 	"entrypoints": {
 		"client": [
 			{
-				"value": "dev.oxod.oxai.OxAI",
+				"value": "nl.oxod.oxai.OxAI",
 				"adapter": "kotlin"
 			}
 		]
