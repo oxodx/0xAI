@@ -26,6 +26,6 @@ jobs:
 
           files: build/libs/!(*-@(dev|sources|all)).jar
 
-          version-type: beta
+          version-type: release
 
           loaders: fabric quilt
