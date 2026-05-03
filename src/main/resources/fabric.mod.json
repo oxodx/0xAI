@@ -14,8 +14,7 @@
 	"entrypoints": {
 		"client": [
 			{
-				"value": "nl.oxod.oxai.OxAI",
-				"adapter": "kotlin"
+				"value": "nl.oxod.oxai.OxAI"
 			}
 		]
 	},
@@ -26,8 +25,7 @@
 		"fabricloader": ">=0.17.3",
 		"minecraft": "~26.1",
 		"java": ">=21",
-		"fabric-api": "*",
-		"fabric-language-kotlin": "*"
+		"fabric-api": "*"
 	},
 	"suggests": {
 	}
