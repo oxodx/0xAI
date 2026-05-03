@@ -1,0 +1,15 @@
+{
+	"oxai.options.title": "OxAI Options",
+	"oxai.options.enabled": "Enabled",
+	"oxai.options.show_errors": "Show Errors",
+	"oxai.options.max_tokens": "Max Tokens",
+	"oxai.options.temperature": "Temperature",
+	"oxai.options.max_message_length": "Max Message Length",
+	"oxai.options.request_timeout": "Request Timeout",
+	"oxai.options.context_messages": "Context Messages",
+	"oxai.options.trigger": "Trigger",
+	"oxai.options.ollama_url": "Ollama URL",
+	"oxai.options.model": "Model",
+	"oxai.options.response_prefix": "Response Prefix",
+	"oxai.options.system_prompt": "System Prompt"
+}

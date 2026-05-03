@@ -1,152 +1,153 @@
 package nl.oxod.oxai;
 
+import com.mojang.serialization.Codec;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.options.OptionsSubScreen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-public class OxAIConfigScreen extends Screen {
-  private static final int LABEL_WIDTH = 120;
-  private static final int FIELD_WIDTH = 210;
-  private static final int ROW_HEIGHT = 24;
-
-  private final Screen parent;
+public class OxAIConfigScreen extends OptionsSubScreen {
   private final OxAIConfig config;
 
-  private CycleButton<Boolean> enabled;
-  private EditBox trigger;
-  private EditBox ollamaUrl;
-  private EditBox model;
-  private EditBox systemPrompt;
-  private EditBox maxTokens;
-  private EditBox temperature;
-  private EditBox responsePrefix;
-  private EditBox maxMessageLength;
-  private CycleButton<Boolean> showErrors;
-  private EditBox requestTimeout;
-  private EditBox contextMessages;
-  private StringWidget status;
-
   public OxAIConfigScreen(Screen parent) {
-    super(Component.literal("OxAI Config"));
-    this.parent = parent;
+    super(parent, Minecraft.getInstance().options, Component.translatable("oxai.options.title"));
     this.config = OxAI.getConfig();
   }
 
   @Override
-  protected void init() {
-    int rowWidth = LABEL_WIDTH + FIELD_WIDTH;
-    int x = (this.width - rowWidth) / 2;
-    int y = 20;
+  protected void addOptions() {
+    if (this.list == null) {
+      return;
+    }
 
-    addRenderableOnly(new StringWidget(0, y, this.width, 20, this.title, this.font));
-    y += 28;
+    this.list.addSmall(
+        OptionInstance.createBoolean("oxai.options.enabled", config.isEnabled(), config::setEnabled),
+        OptionInstance.createBoolean("oxai.options.show_errors", config.isShowErrors(), config::setShowErrors));
 
-    enabled = CycleButton.onOffBuilder(config.isEnabled())
-        .create(x + LABEL_WIDTH, y, FIELD_WIDTH, 20, Component.literal("Enabled"));
-    addRow(x, y, "Enabled", enabled);
-    y += ROW_HEIGHT;
+    this.list.addSmall(
+        intOption("oxai.options.max_tokens", 1, 2048, config.getMaxTokens(), config::setMaxTokens),
+        doubleOption("oxai.options.temperature", config.getTemperature(), config::setTemperature));
 
-    trigger = addTextRow(x, y, "Trigger", config.getTrigger(), 64);
-    y += ROW_HEIGHT;
-    ollamaUrl = addTextRow(x, y, "Ollama URL", config.getOllamaUrl(), 256);
-    y += ROW_HEIGHT;
-    model = addTextRow(x, y, "Model", config.getModel(), 128);
-    y += ROW_HEIGHT;
-    systemPrompt = addTextRow(x, y, "System Prompt", config.getSystemPrompt(), 512);
-    y += ROW_HEIGHT;
-    maxTokens = addTextRow(x, y, "Max Tokens", Integer.toString(config.getMaxTokens()), 8);
-    y += ROW_HEIGHT;
-    temperature = addTextRow(x, y, "Temperature", Double.toString(config.getTemperature()), 8);
-    y += ROW_HEIGHT;
-    responsePrefix = addTextRow(x, y, "Response Prefix", config.getResponsePrefix(), 64);
-    y += ROW_HEIGHT;
-    maxMessageLength = addTextRow(x, y, "Max Message Length", Integer.toString(config.getMaxMessageLength()), 8);
-    y += ROW_HEIGHT;
+    this.list.addSmall(
+        intOption("oxai.options.max_message_length", 64, 256, config.getMaxMessageLength(),
+            config::setMaxMessageLength),
+        intOption("oxai.options.request_timeout", 1000, 120000, config.getRequestTimeout(),
+            config::setRequestTimeout));
 
-    showErrors = CycleButton.onOffBuilder(config.isShowErrors())
-        .create(x + LABEL_WIDTH, y, FIELD_WIDTH, 20, Component.literal("Show Errors"));
-    addRow(x, y, "Show Errors", showErrors);
-    y += ROW_HEIGHT;
+    this.list.addSmall(
+        intOption("oxai.options.context_messages", 0, 20, config.getContextMessages(), config::setContextMessages)
+            .createButton(this.options),
+        stringButton("oxai.options.trigger", config::getTrigger, config::setTrigger, 64));
 
-    requestTimeout = addTextRow(x, y, "Request Timeout", Integer.toString(config.getRequestTimeout()), 8);
-    y += ROW_HEIGHT;
-    contextMessages = addTextRow(x, y, "Context Messages", Integer.toString(config.getContextMessages()), 8);
-    y += ROW_HEIGHT + 6;
-
-    status = new StringWidget(0, y, this.width, 20, Component.empty(), this.font);
-    addRenderableOnly(status);
-    y += 26;
-
-    int buttonX = (this.width - 206) / 2;
-    addRenderableWidget(Button.builder(Component.literal("Save"), button -> save())
-        .bounds(buttonX, y, 100, 20)
-        .build());
-    addRenderableWidget(Button.builder(Component.literal("Cancel"), button -> close())
-        .bounds(buttonX + 106, y, 100, 20)
-        .build());
+    List<AbstractWidget> stringOptions = new ArrayList<>();
+    stringOptions.add(stringButton("oxai.options.ollama_url", config::getOllamaUrl, config::setOllamaUrl, 256));
+    stringOptions.add(stringButton("oxai.options.model", config::getModel, config::setModel, 128));
+    stringOptions.add(stringButton("oxai.options.response_prefix", config::getResponsePrefix, config::setResponsePrefix,
+        64));
+    stringOptions.add(stringButton("oxai.options.system_prompt", config::getSystemPrompt, config::setSystemPrompt, 512));
+    this.list.addSmall(stringOptions);
   }
 
   @Override
-  public void onClose() {
-    close();
+  public void removed() {
+    config.save();
   }
 
-  private EditBox addTextRow(int x, int y, String label, String value, int maxLength) {
-    EditBox box = new EditBox(this.font, x + LABEL_WIDTH, y, FIELD_WIDTH, 20, Component.literal(label));
-    box.setMaxLength(maxLength);
-    box.setValue(value);
-    addRow(x, y, label, box);
-    return box;
+  private OptionInstance<Integer> intOption(String key, int min, int max, int value, Consumer<Integer> setter) {
+    return new OptionInstance<>(
+        key,
+        OptionInstance.noTooltip(),
+        this::valueText,
+        new OptionInstance.IntRange(min, max),
+        value,
+        setter);
   }
 
-  private void addRow(int x, int y, String label, net.minecraft.client.gui.components.AbstractWidget widget) {
-    addRenderableOnly(new StringWidget(x, y + 5, LABEL_WIDTH - 8, 10, Component.literal(label), this.font));
-    addRenderableWidget(widget);
+  private OptionInstance<Double> doubleOption(String key, double value, Consumer<Double> setter) {
+    return new OptionInstance<>(
+        key,
+        OptionInstance.noTooltip(),
+        (caption, optionValue) -> valueText(caption, Math.round(optionValue * 100.0) / 100.0),
+        OptionInstance.UnitDouble.INSTANCE,
+        Codec.doubleRange(0.0, 1.0),
+        value,
+        setter);
   }
 
-  private void save() {
-    try {
-      config.setEnabled(enabled.getValue());
-      config.setTrigger(trigger.getValue());
-      config.setOllamaUrl(ollamaUrl.getValue());
-      config.setModel(model.getValue());
-      config.setSystemPrompt(systemPrompt.getValue());
-      config.setMaxTokens(parseInt(maxTokens, "Max Tokens"));
-      config.setTemperature(parseDouble(temperature, "Temperature"));
-      config.setResponsePrefix(responsePrefix.getValue());
-      config.setMaxMessageLength(parseInt(maxMessageLength, "Max Message Length"));
-      config.setShowErrors(showErrors.getValue());
-      config.setRequestTimeout(parseInt(requestTimeout, "Request Timeout"));
-      config.setContextMessages(parseInt(contextMessages, "Context Messages"));
-      config.save();
-      status.setMessage(Component.literal("Saved"));
-    } catch (IllegalArgumentException e) {
-      status.setMessage(Component.literal(e.getMessage()));
+  private Component valueText(Component caption, Object value) {
+    return Component.literal(caption.getString() + ": " + value);
+  }
+
+  private Button stringButton(String key, Supplier<String> getter, Consumer<String> setter, int maxLength) {
+    return Button.builder(valueText(Component.translatable(key), getter.get()), button -> {
+      this.minecraft.setScreen(new OxAITextOptionScreen(this, key, getter.get(), maxLength, value -> {
+        setter.accept(value);
+        button.setMessage(valueText(Component.translatable(key), value));
+      }));
+    }).build();
+  }
+
+  private static class OxAITextOptionScreen extends Screen {
+    private final Screen parent;
+    private final String key;
+    private final String initialValue;
+    private final int maxLength;
+    private final Consumer<String> onSave;
+    private EditBox editBox;
+
+    OxAITextOptionScreen(Screen parent, String key, String initialValue, int maxLength, Consumer<String> onSave) {
+      super(Component.translatable(key));
+      this.parent = parent;
+      this.key = key;
+      this.initialValue = initialValue;
+      this.maxLength = maxLength;
+      this.onSave = onSave;
     }
-  }
 
-  private int parseInt(EditBox box, String label) {
-    try {
-      return Integer.parseInt(box.getValue());
-    } catch (NumberFormatException e) {
-      throw new IllegalArgumentException(label + " must be a whole number");
+    @Override
+    protected void init() {
+      int fieldWidth = Math.min(360, this.width - 40);
+      int fieldX = (this.width - fieldWidth) / 2;
+      int y = this.height / 2 - 30;
+
+      this.editBox = new EditBox(this.font, fieldX, y, fieldWidth, 20, Component.translatable(key));
+      this.editBox.setMaxLength(maxLength);
+      this.editBox.setValue(initialValue);
+      this.addRenderableWidget(editBox);
+      this.setInitialFocus(editBox);
+
+      int buttonX = (this.width - 204) / 2;
+      this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, button -> saveAndClose())
+          .bounds(buttonX, y + 32, 100, 20)
+          .build());
+      this.addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, button -> close())
+          .bounds(buttonX + 104, y + 32, 100, 20)
+          .build());
     }
-  }
 
-  private double parseDouble(EditBox box, String label) {
-    try {
-      return Double.parseDouble(box.getValue());
-    } catch (NumberFormatException e) {
-      throw new IllegalArgumentException(label + " must be a number");
+    @Override
+    public void onClose() {
+      close();
     }
-  }
 
-  private void close() {
-    if (this.minecraft != null) {
-      this.minecraft.setScreen(parent);
+    private void saveAndClose() {
+      onSave.accept(editBox.getValue());
+      close();
+    }
+
+    private void close() {
+      if (this.minecraft != null) {
+        this.minecraft.setScreen(parent);
+      }
     }
   }
 }
