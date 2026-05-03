@@ -8,13 +8,18 @@
 		"0x0D_"
 	],
 	"contact": { },
-	"license": "CC0-1.0",
+	"license": "GPL-3.0-only",
 	"icon": "assets/oxai/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"client": [
 			{
 				"value": "nl.oxod.oxai.OxAI"
+			}
+		],
+		"modmenu": [
+			{
+				"value": "nl.oxod.oxai.OxAIModMenuApi"
 			}
 		]
 	},
@@ -24,9 +29,10 @@
 	"depends": {
 		"fabricloader": ">=0.17.3",
 		"minecraft": "~26.1",
-		"java": ">=21",
+		"java": ">=25",
 		"fabric-api": "*"
 	},
 	"suggests": {
+		"modmenu": "*"
 	}
 }

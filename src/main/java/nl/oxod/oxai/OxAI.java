@@ -12,6 +12,7 @@ import java.util.List;
 public class OxAI implements ClientModInitializer {
   public static final String MODID = "oxai";
   private static final Logger logger = LoggerFactory.getLogger(MODID);
+  private static OxAIConfig activeConfig;
 
   private OxAIConfig config;
   private OllamaClient ollamaClient;
@@ -24,6 +25,7 @@ public class OxAI implements ClientModInitializer {
     logger.info("Initializing 0xAI...");
 
     config = OxAIConfig.load();
+    activeConfig = config;
     ollamaClient = new OllamaClient(config);
 
     ClientReceiveMessageEvents.CHAT.register((message, signedMessage, messageType, senderUuid, params) -> {
@@ -115,5 +117,12 @@ public class OxAI implements ClientModInitializer {
 
   public static Logger getLogger() {
     return logger;
+  }
+
+  public static OxAIConfig getConfig() {
+    if (activeConfig == null) {
+      activeConfig = OxAIConfig.load();
+    }
+    return activeConfig;
   }
 }
