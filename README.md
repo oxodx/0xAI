@@ -1,6 +1,6 @@
-# 0xAI
+# oxai
 
-0xAI is a Fabric client mod that adds an Ollama-powered chat companion to Minecraft. Type `@ai` in chat and the mod sends the prompt to your local Ollama server, then replies in chat.
+oxai is a Fabric client mod that adds an Ollama-powered chat companion to Minecraft. Type `@ai` in chat and the mod sends the prompt to your local Ollama server, then replies in chat.
 
 ## Support
 
