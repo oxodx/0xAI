@@ -1,9 +1,5 @@
-name: build-release
-
-on:
-  release:
-    types:
-      - published
+name: Release
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -15,7 +11,7 @@ jobs:
           distribution: 'temurin'
           java-version: '25'
       - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew build -Dbuild.release=true
+      - run: ./gradlew jar
       - uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: Qqd7ogyY
