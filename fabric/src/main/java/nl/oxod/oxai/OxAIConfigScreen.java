@@ -69,7 +69,7 @@ public class OxAIConfigScreen extends OptionsSubScreen {
         this::valueText,
         new OptionInstance.IntRange(min, max),
         value,
-        setter);
+        v -> setter.accept(v));
   }
 
   private OptionInstance<Double> doubleOption(String key, double value, Consumer<Double> setter) {
@@ -80,7 +80,7 @@ public class OxAIConfigScreen extends OptionsSubScreen {
         OptionInstance.UnitDouble.INSTANCE,
         Codec.doubleRange(0.0, 1.0),
         value,
-        setter);
+        v -> setter.accept(v));
   }
 
   private Component valueText(Component caption, Object value) {
@@ -89,7 +89,7 @@ public class OxAIConfigScreen extends OptionsSubScreen {
 
   private Button stringButton(String key, Supplier<String> getter, Consumer<String> setter, int maxLength) {
     return Button.builder(valueText(Component.translatable(key), getter.get()), button -> {
-      this.minecraft.setScreen(new OxAITextOptionScreen(this, key, getter.get(), maxLength, value -> {
+      this.minecraft.setScreenAndShow(new OxAITextOptionScreen(this, key, getter.get(), maxLength, value -> {
         setter.accept(value);
         button.setMessage(valueText(Component.translatable(key), value));
       }));
@@ -146,7 +146,7 @@ public class OxAIConfigScreen extends OptionsSubScreen {
 
     private void close() {
       if (this.minecraft != null) {
-        this.minecraft.setScreen(parent);
+        this.minecraft.setScreenAndShow(parent);
       }
     }
   }
