@@ -31,13 +31,10 @@
 	],
 	"depends": {
 		"fabricloader": ">=${fabric_loader_version}",
-		"fabric-command-api-v2": ">=${fabric_version}",
 		"fabric-lifecycle-events-v1": ">=${fabric_version}",
-		"fabric-resource-loader-v0": ">=${fabric_version}",
-		"fabric-convention-tags-v2": ">=${fabric_version}",
+		"fabric-message-api-v1": ">=${fabric_version}",
 		"minecraft": "~${minecraft_version}",
-		"java": ">=${java_version}",
-		"fabric-api": "*"
+		"java": ">=${java_version}"
 	},
 	"suggests": {
 		"modmenu": "*"
