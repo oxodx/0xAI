@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>[ OxAi ]</h1>
+  <h1>[ OxAI ]</h1>
 </div>
 
 <p align="center">
