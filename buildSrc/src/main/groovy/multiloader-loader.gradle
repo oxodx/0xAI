@@ -84,6 +84,7 @@ publishMods {
     accessToken = providers.environmentVariable("GITHUB_TOKEN")
     tagName = "mc$minecraft_version-$project.version-$project.name"
     commitish = "main"
+    changelog = providers.environmentVariable("CHANGELOG").orElse("No changelog provided")
 
     file.unset()
     file.unsetConvention()
