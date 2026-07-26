@@ -73,6 +73,7 @@ publishMods {
     accessToken = providers.environmentVariable("MODRINTH_TOKEN")
     projectId = "Qqd7ogyY"
     minecraftVersions.add(minecraft_version)
+    changelog = providers.environmentVariable("CHANGELOG").orElse("No changelog provided")
 
     if (isFabric) {
       requires("fabric-api")
@@ -83,7 +84,7 @@ publishMods {
     repository = "oxodx/oxai"
     accessToken = providers.environmentVariable("GITHUB_TOKEN")
     tagName = "mc$minecraft_version-$project.version-$project.name"
-    commitish = "main"
+    commitish = "master"
     changelog = providers.environmentVariable("CHANGELOG").orElse("No changelog provided")
 
     file.unset()
