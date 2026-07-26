@@ -1,0 +1,93 @@
+plugins {
+  id "multiloader-common"
+  id "me.modmuss50.mod-publish-plugin" // https://github.com/modmuss50/mod-publish-plugin
+}
+
+// Declare capabilities on the outgoing configurations.
+// Read more about capabilities here: https://docs.gradle.org/current/userguide/component_capabilities.html#sec:declaring-additional-capabilities-for-a-local-component
+['apiElements', 'runtimeElements', 'sourcesElements'/*, 'javadocElements'*/].each { variant ->
+  configurations."$variant".outgoing {
+    capability("$group:${base.archivesName.get()}:$version")
+    capability("$group:$mod_id-${project.name}-${minecraft_version}:$version")
+    capability("$group:$mod_id:$version")
+  }
+  publishing.publications.configureEach {
+    suppressPomMetadataWarningsFor(variant)
+  }
+}
+
+configurations {
+  commonJava {
+    canBeResolved = true
+  }
+  commonResources{
+    canBeResolved = true
+  }
+}
+
+//dependencies {
+//  compileOnly(project(':common')) {
+//    capabilities {
+//      requireCapability "$group:$mod_id"
+//    }
+//  }
+//  commonJava project(path: ':common', configuration: 'commonJava')
+//  commonResources project(path: ':common', configuration: 'commonResources')
+//}
+
+tasks.named('compileJava', JavaCompile) {
+  dependsOn(configurations.commonJava)
+  source(configurations.commonJava)
+}
+
+processResources {
+  dependsOn(configurations.commonResources)
+  from(configurations.commonResources)
+}
+
+tasks.named('javadoc', Javadoc).configure {
+  dependsOn(configurations.commonJava)
+  source(configurations.commonJava)
+}
+
+tasks.named('sourcesJar', Jar) {
+  dependsOn(configurations.commonJava)
+  from(configurations.commonJava)
+  dependsOn(configurations.commonResources)
+  from(configurations.commonResources)
+}
+
+publishMods {
+  def isFabric = project.name == "fabric"
+  def loaderName = isFabric ? "Fabric" : "NeoForge"
+
+  type = STABLE
+
+  file = jar.archiveFile
+
+  version = "$project.version+mc$minecraft_version"
+  displayName = "$mod_name $loaderName $project.version for mc$minecraft_version"
+  modLoaders.add(project.name)
+
+  modrinth {
+    accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+    projectId = "Qqd7ogyY"
+    minecraftVersions.add(minecraft_version)
+
+    if (isFabric) {
+      requires("fabric-api")
+    }
+  }
+
+  github {
+    repository = "oxodx/oxai"
+    accessToken = providers.environmentVariable("GITHUB_TOKEN")
+    tagName = "mc$minecraft_version-$project.version-$project.name"
+    commitish = "main"
+
+    file.unset()
+    file.unsetConvention()
+
+    allowEmptyFiles = true
+  }
+}
