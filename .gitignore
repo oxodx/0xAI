@@ -1,8 +1,8 @@
 /classes/
-/build/
-/out/
-/bin/
-/run/
+build/
+out/
+bin/
+run/
 /.settings/
 /.kotlin/
 /.vscode/
