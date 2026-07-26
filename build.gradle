@@ -1,23 +1,23 @@
 plugins {
-	// see https://fabricmc.net/develop/ for new versions
-	id 'net.fabricmc.fabric-loom' version '1.17-SNAPSHOT' apply false
-	// see https://github.com/modmuss50/mod-publish-plugin for new versions
-	id "me.modmuss50.mod-publish-plugin" version "2.1.1" apply false
+    // see https://fabricmc.net/develop/ for new versions
+    id 'net.fabricmc.fabric-loom' version '1.17-SNAPSHOT' apply false
+    // see https://github.com/modmuss50/mod-publish-plugin for new versions
+    id "me.modmuss50.mod-publish-plugin" version "2.1.1" apply false
 
-	id 'com.diffplug.spotless' version '7.2.1'
-	id "checkstyle"
+    id 'com.diffplug.spotless' version '7.2.1'
+    id "checkstyle"
 }
 
 allprojects {
-	apply plugin: "com.diffplug.spotless"
+    apply plugin: "com.diffplug.spotless"
 
-	spotless {
-		format "misc", {
-			target "*.gradle", ".gitattributes", ".gitignore"
+    spotless {
+        format "misc", {
+            target "*.gradle", ".gitattributes", ".gitignore"
 
-			trimTrailingWhitespace()
-			leadingTabsToSpaces()
-			endWithNewline()
-		}
-	}
+            trimTrailingWhitespace()
+            leadingTabsToSpaces()
+            endWithNewline()
+        }
+    }
 }
