@@ -1,6 +1,18 @@
-# oxai
+<div align="center">
+  <h1>[ OxAi ]</h1>
+</div>
 
-oxai is a Fabric client mod that adds an Ollama-powered chat companion to Minecraft. Type `@ai` in chat and the mod sends the prompt to your local Ollama server, then replies in chat.
+<p align="center">
+  <b>AI chat companion using Ollama.</b>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/last-commit/oxodx/oxai?&style=for-the-badge&color=8ad7eb&logo=git&logoColor=D9E0EE&labelColor=1E202B" />
+  <img src="https://img.shields.io/github/stars/oxodx/oxai?&style=for-the-badge&color=8ad7eb&logo=git&logoColor=D9E0EE&labelColor=1E202B" />
+  <img src="https://img.shields.io/github/repo-size/oxodx/oxai?&style=for-the-badge&color=8ad7eb&logo=git&logoColor=D9E0EE&labelColor=1E202B" />
+</p>
+
+---
 
 ## Support
 
@@ -132,3 +144,10 @@ Gradle is using an older JDK. Install JDK 25 and make sure `JAVA_HOME` or your I
 
 - Check `ollamaUrl`.
 - Make sure Ollama is running on the configured host and port.
+
+---
+
+<p align="center">
+  <a href="https://github.com/oxodx/oxai/graphs/contributors">Contributors</a> &bull;
+  <a href="LICENSE">GPL-3 License</a>
+</p>
