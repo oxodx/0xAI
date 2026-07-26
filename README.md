@@ -4,8 +4,8 @@ oxai is a Fabric client mod that adds an Ollama-powered chat companion to Minecr
 
 ## Support
 
-- Mod version: `0.1.5`
-- Minecraft: `26.1.x`
+- Mod version: `0.1.6`
+- Minecraft: `26.2`
 - Fabric Loader: `0.17.3+`
 - Fabric API: required
 - Java: `25+`
